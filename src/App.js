@@ -8,16 +8,26 @@ function App() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   const handleBreakUp = () => {
-    setBreakLength(breakLength + 1);
+    if (breakLength < 60) {
+      setBreakLength(breakLength + 1);
+    }
   };
   const handleBreakDown = () => {
-    setBreakLength(breakLength - 1);
+    if (breakLength > 1) {
+      setBreakLength(breakLength - 1);
+    }
   };
   const handleSessionUp = () => {
-    setSessionLength(sessionLength + 1);
+    if (sessionLength < 60) {
+      setSessionLength(sessionLength + 1);
+      setTimer(sessionLength * 60);
+    }
   };
   const handleSessionDown = () => {
-    setSessionLength(sessionLength - 1);
+    if (sessionLength > 1) {
+      setSessionLength(sessionLength - 1);
+      setTimer(sessionLength * 60);
+    }
   };
   const handleStartStop = () => {
     setIsTimerRunning(!isTimerRunning);
@@ -45,7 +55,7 @@ function App() {
     const mins = Math.floor(timer / 60);
     const secs = timer % 60;
 
-    // Добавим ведущий ноль, если число < 10
+    // add leading zeros if needed
     const formattedMins = mins < 10 ? `0${mins}` : `${mins}`;
     const formattedSecs = secs < 10 ? `0${secs}` : `${secs}`;
 
