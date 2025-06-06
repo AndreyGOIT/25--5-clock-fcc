@@ -19,10 +19,42 @@ function App() {
   const handleSessionDown = () => {
     setSessionLength(sessionLength - 1);
   };
+  const handleStartStop = () => {
+    setIsTimerRunning(!isTimerRunning);
+  };
+  const handleReset = () => {
+    setBreakLength(5);
+    setSessionLength(25);
+    setTimer(25 * 60);
+    setIsTimerRunning(false);
+  };
+  useEffect(() => {
+    const handleTimer = () => {
+      setTimer(timer - 1);
+    };
+    let intervalId;
+    if (isTimerRunning) {
+      intervalId = setInterval(() => {
+        handleTimer();
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [isTimerRunning, timer]);
+
+  function formatTime(timer) {
+    const mins = Math.floor(timer / 60);
+    const secs = timer % 60;
+
+    // Добавим ведущий ноль, если число < 10
+    const formattedMins = mins < 10 ? `0${mins}` : `${mins}`;
+    const formattedSecs = secs < 10 ? `0${secs}` : `${secs}`;
+
+    return `${formattedMins}:${formattedSecs}`;
+  }
 
   return (
     <div className="container d-flex flex-column align-items-center">
-      <h1>25-5 Clock</h1>{" "}
+      <h1>25-5 Clock</h1>
       <div className="row">
         <div id="break-label" className="col-sm-6 bg-primary">
           <span>Break Length</span>
@@ -54,14 +86,18 @@ function App() {
               id="time-left"
               className="col-sm-12 bg-light d-flex justify-content-center align-items-center"
             >
-              {}00:00
+              {formatTime(timer)}
             </div>
           </div>
         </div>
-        <button id="start_stop" className="col-sm-6 bg-primary">
+        <button
+          id="start_stop"
+          className="col-sm-6 bg-primary"
+          onClick={handleStartStop}
+        >
           start/stop
         </button>
-        <button id="reset" className="col-sm-6 bg-light">
+        <button id="reset" className="col-sm-6 bg-light" onClick={handleReset}>
           reset
         </button>
       </div>
