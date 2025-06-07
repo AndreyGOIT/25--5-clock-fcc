@@ -10,11 +10,13 @@ It allows the user to set a session (work) and break duration, start/pause the t
 
 ## ✅ Features
 
-- Customizable session and break lengths (1 to 60 minutes)
-- Play/pause toggle
-- Audio notification when time is up
-- Automatic switch between session and break
-- FCC test suite integration
+- Adjustable session and break lengths (1–60 minutes)
+- Start/pause functionality
+- Reset functionality
+- Audio alert when the timer reaches zero
+- Automatic switching between session and break modes
+- Time display in mm:ss format
+- Responsive design for various screen sizes
 
 ## 🧪 freeCodeCamp User Stories
 
@@ -26,8 +28,7 @@ See the full list in the project instructions.
 - React
 - JavaScript (ES6+)
 - HTML5 & CSS3
-- Bootstrap (optional)
-- [mathjs] — not needed in this project but used in the Calculator
+- Bootstrap
 - GitHub Pages — for deployment
 - FCC Test Suite via CDN
 
