@@ -64,9 +64,14 @@ function App() {
   useEffect(() => {
     if (timer === 0) {
       setIsBeepPlaying(true);
-      if (beepRef.current) {
-        beepRef.current.play();
-      }
+      setTimeout(() => {
+        if (beepRef.current) {
+          beepRef.current.currentTime = 0;
+          beepRef.current.play().catch((error) => {
+            console.error("Error playing beep:", error);
+          });
+        }
+      }, 100);
       setTimeout(() => {
         setIsBeepPlaying(false);
       }, 1000);
@@ -96,20 +101,28 @@ function App() {
     <div className="container d-flex flex-column align-items-center">
       <h1>25-5 Clock</h1>
       <div className="row">
-        <div id="break-label" className="col-sm-6 bg-primary">
-          <span>Break Length</span>
-          <div className="d-flex">
-            <button onClick={handleBreakUp}>🔼</button>
-            <span id="break-length">{breakLength}</span>
-            <button onClick={handleBreakDown}>🔽</button>
+        <div id="break-label" className="col-sm-6 ">
+          <h3>Break Length</h3>
+          <div className="d-flex justify-content-evenly">
+            <button className="break-btn fs-3" onClick={handleBreakUp}>
+              🔼
+            </button>
+            <h3 id="break-length">{breakLength}</h3>
+            <button className="break-btn fs-3" onClick={handleBreakDown}>
+              🔽
+            </button>
           </div>
         </div>
         <div id="session-label" className="col-sm-6 bg-light">
-          <span>Session Length</span>
-          <div className="d-flex">
-            <button onClick={handleSessionUp}>🔼</button>
-            <span id="session-length">{sessionLength}</span>
-            <button onClick={handleSessionDown}>🔽</button>
+          <h3>Session Length</h3>
+          <div className="d-flex justify-content-evenly">
+            <button className="session-btn fs-3" onClick={handleSessionUp}>
+              🔼
+            </button>
+            <h3 id="session-length">{sessionLength}</h3>
+            <button className="session-btn fs-3" onClick={handleSessionDown}>
+              🔽
+            </button>
           </div>
         </div>
         <div className="container ">
@@ -130,23 +143,32 @@ function App() {
             </div>
           </div>
         </div>
-        <button
-          id="start_stop"
-          className="col-sm-6 bg-primary"
-          onClick={handleStartStop}
-        >
-          start/stop
-        </button>
-        <button id="reset" className="col-sm-6 bg-light" onClick={handleReset}>
-          reset
-        </button>
-        {isBeepPlaying && (
-          <audio
-            id="beep"
-            ref={beepRef}
-            src="https://cdn.freesound.org/previews/196/196235_97763-lq.mp3"
-          />
-        )}
+        <div className="d-flex justify-content-evenly">
+          <button
+            id="start_stop"
+            className="col-sm-6 fs-3"
+            onClick={handleStartStop}
+            title="Start / Stop"
+          >
+            ⏯️
+          </button>
+          <button
+            id="reset"
+            className="col-sm-6 fs-3"
+            onClick={handleReset}
+            title="Reset"
+          >
+            🔄
+          </button>
+          {isBeepPlaying && (
+            <audio
+              id="beep"
+              ref={beepRef}
+              src="https://cdn.freesound.org/previews/196/196235_97763-lq.mp3"
+              preload="auto"
+            />
+          )}
+        </div>
       </div>
     </div>
   );
