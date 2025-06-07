@@ -32,10 +32,14 @@ function App() {
   };
   const handleSessionDown = () => {
     if (sessionLength > 1) {
-      setSessionLength(sessionLength - 1);
-      setTimer(sessionLength * 60);
+      setSessionLength((prev) => {
+        const newLength = prev - 1;
+        setTimer(newLength * 60);
+        return newLength;
+      });
     }
   };
+  //timer
   const handleStartStop = () => {
     setIsTimerRunning(!isTimerRunning);
   };
@@ -45,31 +49,34 @@ function App() {
     setTimer(25 * 60);
     setIsTimerRunning(false);
   };
+  //timer
   useEffect(() => {
-    const handleTimer = () => {
-      setTimer(timer - 1);
-    };
     let intervalId;
-    if (isTimerRunning) {
+    if (isTimerRunning && timer > 0) {
       intervalId = setInterval(() => {
-        handleTimer();
+        setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
     }
+    return () => clearInterval(intervalId);
+  }, [isTimerRunning, timer]);
+  //timer
+  useEffect(() => {
     if (timer === 0) {
       setIsBeepPlaying(true);
-      setTimerLabel(timerLabel === "Session" ? "Break" : "Session");
       setTimeout(() => {
         setIsBeepPlaying(false);
       }, 1000);
+
       if (timerLabel === "Session") {
+        setTimerLabel("Break");
         setTimer(breakLength * 60);
       } else {
+        setTimerLabel("Session");
         setTimer(sessionLength * 60);
       }
     }
-    return () => clearInterval(intervalId);
-  }, [isTimerRunning, timer, timerLabel, breakLength, sessionLength]);
-
+  }, [timer, timerLabel, breakLength, sessionLength]);
+  //format time
   function formatTime(timer) {
     const mins = Math.floor(timer / 60);
     const secs = timer % 60;
