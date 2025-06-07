@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 function App() {
@@ -8,6 +8,7 @@ function App() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerLabel, setTimerLabel] = useState("Session");
   const [isBeepPlaying, setIsBeepPlaying] = useState(false);
+  const beepRef = useRef(null);
 
   //break length
   const handleBreakUp = () => {
@@ -39,7 +40,7 @@ function App() {
       });
     }
   };
-  //timer
+  //timer control
   const handleStartStop = () => {
     setIsTimerRunning(!isTimerRunning);
   };
@@ -49,7 +50,7 @@ function App() {
     setTimer(25 * 60);
     setIsTimerRunning(false);
   };
-  //timer
+  //timer is running
   useEffect(() => {
     let intervalId;
     if (isTimerRunning && timer > 0) {
@@ -59,10 +60,13 @@ function App() {
     }
     return () => clearInterval(intervalId);
   }, [isTimerRunning, timer]);
-  //timer
+  //timer logic
   useEffect(() => {
     if (timer === 0) {
       setIsBeepPlaying(true);
+      if (beepRef.current) {
+        beepRef.current.play();
+      }
       setTimeout(() => {
         setIsBeepPlaying(false);
       }, 1000);
@@ -95,17 +99,17 @@ function App() {
         <div id="break-label" className="col-sm-6 bg-primary">
           <span>Break Length</span>
           <div className="d-flex">
-            <button onClick={handleBreakUp}>up</button>
+            <button onClick={handleBreakUp}>🔼</button>
             <span id="break-length">{breakLength}</span>
-            <button onClick={handleBreakDown}>down</button>
+            <button onClick={handleBreakDown}>🔽</button>
           </div>
         </div>
         <div id="session-label" className="col-sm-6 bg-light">
           <span>Session Length</span>
           <div className="d-flex">
-            <button onClick={handleSessionUp}>up</button>
+            <button onClick={handleSessionUp}>🔼</button>
             <span id="session-length">{sessionLength}</span>
-            <button onClick={handleSessionDown}>down</button>
+            <button onClick={handleSessionDown}>🔽</button>
           </div>
         </div>
         <div className="container ">
@@ -139,6 +143,7 @@ function App() {
         {isBeepPlaying && (
           <audio
             id="beep"
+            ref={beepRef}
             src="https://cdn.freesound.org/previews/196/196235_97763-lq.mp3"
           />
         )}
