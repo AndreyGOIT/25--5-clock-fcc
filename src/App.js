@@ -6,7 +6,10 @@ function App() {
   const [sessionLength, setSessionLength] = useState(25);
   const [timer, setTimer] = useState(sessionLength * 60);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timerLabel, setTimerLabel] = useState("Session");
+  const [isBeepPlaying, setIsBeepPlaying] = useState(false);
 
+  //break length
   const handleBreakUp = () => {
     if (breakLength < 60) {
       setBreakLength(breakLength + 1);
@@ -17,10 +20,14 @@ function App() {
       setBreakLength(breakLength - 1);
     }
   };
+  //session length
   const handleSessionUp = () => {
     if (sessionLength < 60) {
-      setSessionLength(sessionLength + 1);
-      setTimer(sessionLength * 60);
+      setSessionLength((prev) => {
+        const newLength = prev + 1;
+        setTimer(newLength * 60);
+        return newLength;
+      });
     }
   };
   const handleSessionDown = () => {
@@ -48,8 +55,20 @@ function App() {
         handleTimer();
       }, 1000);
     }
+    if (timer === 0) {
+      setIsBeepPlaying(true);
+      setTimerLabel(timerLabel === "Session" ? "Break" : "Session");
+      setTimeout(() => {
+        setIsBeepPlaying(false);
+      }, 1000);
+      if (timerLabel === "Session") {
+        setTimer(breakLength * 60);
+      } else {
+        setTimer(sessionLength * 60);
+      }
+    }
     return () => clearInterval(intervalId);
-  }, [isTimerRunning, timer]);
+  }, [isTimerRunning, timer, timerLabel, breakLength, sessionLength]);
 
   function formatTime(timer) {
     const mins = Math.floor(timer / 60);
@@ -90,7 +109,7 @@ function App() {
               d-flex
               justify-content-center align-items-center"
             >
-              Session
+              {timerLabel}
             </div>
             <div
               id="time-left"
@@ -110,6 +129,12 @@ function App() {
         <button id="reset" className="col-sm-6 bg-light" onClick={handleReset}>
           reset
         </button>
+        {isBeepPlaying && (
+          <audio
+            id="beep"
+            src="https://cdn.freesound.org/previews/196/196235_97763-lq.mp3"
+          />
+        )}
       </div>
     </div>
   );
